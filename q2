@@ -1,0 +1,127 @@
+#include <iostream>
+#include <tuple>
+using namespace std;
+class Robot {
+private:
+	string name;
+	int hits;
+public:
+	Robot(const string& rname) :name(rname), hits(0) {};
+	void hitball(int& ballx, int& bally, const string& dir) {
+		if (dir == "up") {
+			bally++;
+		}
+		else if (dir == "down") {
+			bally++;
+		}
+		else if (dir == "left") {
+			ballx--;
+		}
+		else if (dir == "right") {
+			ballx++;
+		}
+		hits = hits + 1;
+	}
+	int getHits() {
+		return hits;
+	}
+};
+class ball {
+private:
+	int x, y;
+public:
+	ball(int bx, int by) : x(bx), y(by) {};
+	int getx() {
+		return x;
+	}
+	int gety() {
+		return y;
+	}
+	void move(int dx, int dy) {
+		x = x + dx;
+		y = y + dy;
+	}
+	tuple <int, int> getpos() const {
+		return make_tuple(x, y);
+	}
+};
+class goal {
+private:
+	int gx, gy; 
+public:
+	goal() : gx(3), gy(3) {};
+	bool isgoalreached(int ballx, int bally) {
+		return ((ballx == gx) && (bally == gy));
+	}
+};
+
+class team {
+private:
+	string teamname;
+	Robot* robot;
+public:
+	team(const string& name, Robot& robo) : teamname(name), robot(&robo) {};
+	string getname() {
+		return teamname;
+	}
+	Robot* getrobot() {
+		return robot;
+	}
+};
+class Game {
+private:
+	team t1;
+	team t2;
+	ball b;
+	goal g;
+public:
+	Game(team team1, team team2, int ballX, int ballY)
+		: t1(team1), t2(team2), b(ballX, ballY) {
+	}
+	void play(team* t) {
+		Robot* robot = t->getrobot();
+		int ballx = b.getx();
+		int bally = b.gety();
+
+		while (!g.isgoalreached(ballx, bally)) {
+			string direction;
+			cout << "Team " << t->getname() << "Direction (up, down, left, right): " << endl;
+			cin >> direction;
+			robot->hitball(ballx, bally, direction);
+			b.move(ballx - b.getx(), bally - b.gety());
+			cout << "Ball position: (" << b.getx() << ", " << b.gety() << ")" << endl;
+		}
+		cout << "Team " << t->getname() << " has reached the goal in " << robot->getHits() << " hits!\n";
+
+	}
+	void startgame() {
+		play(&t1);
+		play(&t2);
+
+		declarewinner();
+	}
+	void declarewinner() {
+		int hits1 = t1.getrobot()->getHits();
+		int hits2 = t2.getrobot()->getHits();
+		if (hits1 > hits2) {
+			cout << "Team " << t1.getname() << " wins!\n";
+		}
+		else if (hits2 > hits1) {
+			cout << "Team " << t2.getname() << " wins!\n";
+		}
+		else cout << "Match Tied\n";
+	}
+};
+int main() {
+	cout << "******************************************\n";
+	cout << "K243053 - ALEEZA\n";
+	cout << "******************************************\n";
+	Robot robot1("Robo1");
+	Robot robot2("Robo2");
+
+	team team1("Team A", robot1);
+	team team2("Team B", robot2);
+
+	Game game(team1, team2, 0, 0);
+	game.startgame();
+}
