@@ -1,0 +1,96 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+class Register {
+	int id;
+	string name;
+	int pin;
+public:
+	Register(int i, string n, int p) : id(i), name(n), pin(0) {};
+	int returnid() {
+		return id;
+	}
+	string returnname() {
+		return name;
+	}
+	int returnpin() {
+		return pin;
+	}
+	void Reg() {};
+	void payfees() {
+		cout << "Enter NU-pin to pay your Semester Fees: " << endl;
+		cin >> pin;
+		if (pin > 0 && pin < 5000) {
+			cout << "Your Semester Fees Has Been Recieved And Your Transport Card Has Been Renewed Until Next Semester!\n";
+		}
+		else cout << "Your Semester Fees Has Not Been Recieved\nTransport Card Expired\n";
+	}
+	void generatefees() {
+		int fees = rand() % 2000001;
+		cout << "Semester Fees for ID: " << id << " is " << fees << endl;
+		payfees();
+	}
+};
+class Route {
+	string location;
+	string stop;
+public:
+	Register& std;
+	Route(Register& student) : std(student) {};
+	void setloc(string l) {
+		location = l;
+	}
+	string retloc() {
+		return location;
+	}
+	void pickup() {
+		if (location == "Shah Latif") {
+			stop = "Shah Latif Bus Stop\n";
+		}
+		else if (location == "Malir Cantt") {
+			stop = "Cantt Bazaar Bus Stop\n";
+		}
+		else if (location == "Ayesha Manzil") {
+			stop = "Bus Stop 22\n";
+		}
+		else if (location == "North Karachi") {
+			stop = "Amna Apartments\n";
+		}
+		else if (location == "Checkpost 6") {
+			stop = "Tank Chowk\n";
+		}
+		else if (location == "Malir Halt") {
+			stop = "Malir 15\n";
+		}
+
+		cout << "Pickup Stop for ID " << std.returnid() << " : " << stop << endl;
+	}
+};
+class Attendance {
+	int enteredid;
+	bool ispresent = false;
+	Register& std;
+public:
+	Attendance(Register& student) : std(student) {};
+	void markattendance() {
+		cout << "Enter Your Student ID To Mark Attendance: " << endl;
+		cin >> enteredid;
+		if (enteredid == std.returnid()) {
+			ispresent = true;
+			cout << "Attendance For ID " << std.returnid() << " Has Been Marked As Present\n";
+		}
+		else {
+			ispresent = false;
+			cout << "Attendance For ID " << std.returnid() << " Has Been Marked As Absent\n";
+		}
+	}
+};
+int main() {
+	Register student(3053, "Aleeza", 0000);
+	Route route(student); 
+	route.setloc("Shah Latif");
+	route.pickup();
+	Attendance attendance(student);
+	attendance.markattendance();
+	student.generatefees();
+}
